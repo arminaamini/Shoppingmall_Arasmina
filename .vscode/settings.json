@@ -1,0 +1,15 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.jdt.ls.java.home": "C:\\Users\\mmm\\AppData\\Local\\Programs\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-17",
+      "path": "C:\\Users\\mmm\\AppData\\Local\\Programs\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot",
+      "default": true
+    }
+  ],
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar"
+  ]
+}
