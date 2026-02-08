@@ -6,141 +6,95 @@ import repository.iProductRepository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ProductService {
 
     private final iProductRepository repo;
-    private List<Product> products;
+    
 
     public ProductService(iProductRepository repo){
         this.repo = repo;
-        this.products = repo.findAll();
-        if(this.products == null){
-            this.products = new ArrayList<>();
+       
+    }
+
+    public OperationResult<List<Product>> listProducts(){
+        return OperationResult.ok("ok", repo.findAll());
+    }
+
+    public OperationResult<List<Product>> sortByPrice(boolean asc){
+        List<Product> products = repo.findAll();
+
+        if(asc){
+            products.sort(Comparator.comparing(Product :: getPrice));
         }
+        else{
+            products.sort(Comparator.comparing(Product :: getPrice).reversed());
+
+        }
+        return OperationResult.ok("sorted", products);
+    }
+
+    public OperationResult<Void> add(Product p){
+        if ((p.getName() == null) || p.getName().isBlank()) {
+            return OperationResult.fail("name is needed");
+        }
+        if (p.getPrice().compareTo(BigDecimal.ZERO) < 0) {
+            return OperationResult.fail("price cannot be negative");
+        }
+        if(p.getStockQuantity() < 0){
+            return OperationResult.fail("stock cannot be negative");
+
+        }
+        List<Product> products = repo.findAll();
+        p.setProductId(generateProductId(products));
+        products.add(p);
+        repo.saveAll(products);
+
+        return OperationResult.ok("added", null);
     }
 
 
-    public OperationResult<List<Product>> listProducts(){
-        return OperationResult.ok("ok", new ArrayList<>(products));
+    public OperationResult<Void> update(Product updated){
+        List<Product> products = repo.findAll();
+
+        for(int i = 0 ; i< products.size() ; i++){
+            if(products.get(i).getProductId().equals(updated.getProductId())){
+                products.set(i, updated);
+                repo.saveAll(products);
+                return OperationResult.ok("updated", null);
+
+            }
+        }
+        return OperationResult.fail("product not found");
+
+    }
+
+    public OperationResult<Void> delete(String productId){
+        List<Product> products = repo.findAll();
+        boolean removed = products.removeIf(p -> p.getProductId().equals(productId));
+
+        if(! removed) return OperationResult.fail("product not found");
+
+        repo.saveAll(products);
+        return OperationResult.ok("deleted", null);
+    }
+
+    private String generateProductId(List<Product> products){
+        int max = 0;
+        for(Product p : products){
+            String id = p.getProductId();
+            if(id != null && id.startsWith("P")){
+                int num = Integer.parseInt(id.substring(1));
+                if(num > max) max = num;
+            }
+        }
+        return String.format("P%03d",max + 1);
     }
 
     public List<Product> getProducts(){
-        return new ArrayList<>(products);
+        return repo.findAll();
     }
-
-
-    public OperationResult<Void> newProduct(String name, String category,
-                                            int price, int stockQuantity, String description, String image) {
-
-        if(name == null || name.isBlank()) return OperationResult.fail("name needed");  
-        if(category == null || category.isBlank()) return OperationResult.fail("category needed"); 
-        if(price < 0) return OperationResult.fail("price not negative"); 
-        if(stockQuantity < 0) return OperationResult.fail("stockQuantity not negative");                                     
-        int id = products.stream()
-                .mapToInt(p -> p.getProductId())
-                .max()
-                .orElse(0) + 1;
-
-        Product newProduct = new Product(id, name, category, null, stockQuantity, description, image);
-        products.add(newProduct);
-        repo.saveAll(products);
-        return OperationResult.ok( "Successfully added product", null);
-    }
-
-
-    public OperationResult<Void> deleteProduct(int id) {
-        Product product = findById(id);
-        if(product == null) return OperationResult.fail("no such product");  
-
-        products.remove(product);
-        repo.saveAll(products);
-        return OperationResult.ok( "Successfully deleted product", null);
-    }
-
-
-    private Product findById(int id) {
-        Product product = products.stream()
-                .filter(p -> p.getProductId() == id)
-                .findFirst()
-                .orElse(null);
-
-        return product;
-    }
-
-
-    public OperationResult<Void> modifyProductName(int id, String newName) {
-        if(newName == null || newName.isBlank()) return OperationResult.fail("name needed");  
-
-        Product product = findById(id);
-        if (product == null) {
-            return OperationResult.fail( "No such product with id " + id);
-        }
-        product.setName(newName);
-        repo.saveAll(products);
-        return  OperationResult.ok( "Successfully updated product with name " + newName, null);
-    }
-
-
-    public OperationResult<Void> modifyProductCategory(int id, String newCategory) {
-        if(newCategory == null || newCategory.isBlank()) return OperationResult.fail("name needed");  
-
-        Product product = findById(id);
-        if (product == null) {
-            return OperationResult.fail( "No such product with id " + id);
-        }
-        product.setCategory(newCategory);
-        repo.saveAll(products);
-        return OperationResult.ok( "Successfully updated product category to " + newCategory, null);
-    }
-
-
-    public OperationResult<Void> modifyProductPrice(int id, BigDecimal newPrice) {
-
-        Product product = findById(id);
-        if (product == null) {
-            return OperationResult.fail( "No such product with id " + id);
-        }
-        product.setPrice(newPrice);
-        repo.saveAll(products);
-        return  OperationResult.ok("Successfully updated product price to " + newPrice, null);
-    }
-
-
-    public OperationResult<Void> modifyProductStockQuantity(int id, int newStockQuantity) {
-        if(newStockQuantity <0) return OperationResult.fail("name needed");  
-
-        Product product = findById(id);
-        if (product == null) {
-            return OperationResult.fail( "No such product with id " + id);
-        }
-        product.setStockQuantity(newStockQuantity);
-        repo.saveAll(products);
-        return OperationResult.ok( "Successfully updated product stock quantity to " + newStockQuantity, null);
-    }
-
-
-    public OperationResult<Void> modifyProductDescription(int id, String newDescription) {
-        Product product = findById(id);
-        if (product == null) {
-            return OperationResult.fail( "No such product with id " + id);
-        }
-        product.setDescription(newDescription);
-        repo.saveAll(products);
-        return OperationResult.ok( "Successfully updated product description", null);
-    }
-
-
-    public OperationResult<Void> modifyProductImage(int id, String newImage) {
-        Product product = findById(id);
-        if (product == null) {
-            return OperationResult.fail( "No such product with id " + id);
-        }
-        product.setImage(newImage);
-        repo.saveAll(products);
-        return OperationResult.ok( "Successfully updated product image", null);
-    }
-
 
 }

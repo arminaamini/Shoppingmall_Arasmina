@@ -90,8 +90,7 @@ public OperationResult<Admin> LoginAdmin(String usrname, String password){
             userRepository.save(customer);
 
             currentUser = customer;
-            /////////////GPT////////////////////////
-            System.out.println("REGISTER customer.balance = " + customer.getBalance());
+            
 
             return OperationResult.ok( "registration succussfully", customer);
 

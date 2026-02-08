@@ -2,6 +2,7 @@ package service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import commons.OperationResult;
 import dto.CartSummary;
@@ -31,42 +32,88 @@ public OperationResult<CartSummary> checkOut(Customer customer){
         String userId = customer.getUserId();
         Cart cart = cartRepository.loadCart(userId);
         if(cart.getItems() == null) cart.setItems(new ArrayList<>());
-        BigDecimal total = calculateTotal(cart);
 
-        if(total.compareTo(BigDecimal.ZERO) == 0){
+        if(cart.getItems().isEmpty()){
             return OperationResult.fail("cart is empty");
         }
-        long totalLong = total.longValue();
-        if(customer.getBalance() < totalLong){
-            return OperationResult.fail("not enough balance. Need: " + totalLong
-                +" , you have: "+ customer.getBalance()
+
+        List<Product> products = productRepository.findAll();
+        if(products == null) products = new ArrayList<>();
+
+        BigDecimal total = BigDecimal.ZERO;
+        for(CartItem item : cart.getItems()){
+            String pId = item.getProductId();
+            int quantity = item.getQuantity();
+
+            if(pId == null || pId.isBlank()){
+                return OperationResult.fail("invalid product id in cart");
+            }
+        
+        if( quantity <= 0 ){
+            return OperationResult.fail("invalid product id in cart");
+        }
+        Product p = findProductInList(products, pId);
+        if(p == null){
+            return OperationResult.fail("product not found");
+        }
+        if(p.getStockQuantity() < quantity){
+            return OperationResult.fail(
+                "not enough stock" + (quantity - p.getStockQuantity()) +
+                " more is needed." 
             );
         }
-        customer.withdraw(totalLong);
-        userRepository.save(customer);
-        cartRepository.clearCart(userId);
+        BigDecimal price = p.getPrice();
+        if(price == null){
+            return OperationResult.fail("inavalid price for");
+        }
+        total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
+    }
+    if(total.compareTo(BigDecimal.ZERO) <= 0){
+        return OperationResult.fail("cart is empty");
+    }
+    long totalLong = total.longValue();
+    if(customer.getBalance() < totalLong){
+        return OperationResult.fail("not enough balance");
+    }
 
-        Cart after = cartRepository.loadCart(userId);
-        BigDecimal afterTotal = calculateTotal(after);
-        return OperationResult.ok("checkout successfully", new CartSummary(after, afterTotal));
+    for(CartItem item : cart.getItems()){
+        Product p = findProductInList(products, item.getProductId());
+        p.setStockQuantity(p.getStockQuantity() - item.getQuantity());
+    }
+
+    productRepository.saveAll((products));
+    customer.withdraw(totalLong);
+    userRepository.save(customer);
+    cartRepository.clearCart(userId);
+
+    Cart after = cartRepository.loadCart(userId);
+    if(after.getItems() == null) after.setItems(new ArrayList<>());
+    BigDecimal afterTotal = BigDecimal.ZERO;
+
+    return OperationResult.ok("checkout successfully", new CartSummary(after, afterTotal));
 
     }catch(RuntimeException e){
         e.printStackTrace();
-        return OperationResult.fail("checkout due to system bug");
+        return OperationResult.fail("checkout failed due to bug");
     }
 }
-private BigDecimal calculateTotal(Cart cart){
-    BigDecimal total = BigDecimal.ZERO;
-    if(cart.getItems() == null) return total;
-
-    for(CartItem item : cart.getItems()){
-        Product p = productRepository.findById(item.getProductId());
-        if (p == null) continue;
-
-        BigDecimal price = p.getPrice();
-        total = total.add(price.multiply(BigDecimal.valueOf(item.getQuantity())));   
-        
+    private Product findProductInList(List<Product> products, String productId){
+        for(Product p : products){
+            if(p.getProductId().equals((productId))) return p;
+        }
+        return null;
     }
-    return total;
+
 }
-}
+
+
+
+
+
+
+
+
+
+
+
+

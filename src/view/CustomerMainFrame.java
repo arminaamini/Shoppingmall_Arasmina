@@ -11,9 +11,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ListSelectionListener;
+
 import javax.swing.table.DefaultTableModel;
 
 public class CustomerMainFrame extends JFrame{
@@ -22,9 +26,8 @@ public class CustomerMainFrame extends JFrame{
     private final JSpinner quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
 
     private final JButton addBtn = new JButton("Add to cart");
-    private final JButton removeBtn = new JButton("REmove from cart");
-    private final JButton plusBtn = new JButton("+1");
-    private final JButton minusBtn = new JButton("-1");
+    private final JButton removeBtn = new JButton("Remove from cart");
+ 
 
 
 
@@ -33,6 +36,9 @@ public class CustomerMainFrame extends JFrame{
     private final JButton checkOutBtn = new JButton("checkout");
     private final JButton logoutBtn = new JButton("Logout");
     private final JButton refreshBtn = new JButton("Refresh");
+    private final JButton showProductBtn = new JButton("ShowProduct");
+
+
 
     private final JLabel balanceLabel = new JLabel("Balance: " );
     private final JLabel totLabel = new JLabel("Total:0 " );
@@ -61,8 +67,7 @@ public class CustomerMainFrame extends JFrame{
         top.add(quantitySpinner);
         top.add(addBtn);
         top.add(removeBtn);
-        top.add(plusBtn);
-        top.add(minusBtn);
+      
 
         JScrollPane scroll = new JScrollPane(cartTable);
 
@@ -74,6 +79,7 @@ public class CustomerMainFrame extends JFrame{
         bottom.add(clearBtn);
         bottom.add(refreshBtn);
         bottom.add(logoutBtn);
+        bottom.add(showProductBtn);
 
 
         JPanel root = new JPanel(new BorderLayout(10, 10));
@@ -121,12 +127,7 @@ public class CustomerMainFrame extends JFrame{
     public void onRemove(Runnable action){
         removeBtn.addActionListener(e -> action.run());
     }
-    public void onPlus(Runnable action){
-        plusBtn.addActionListener(e -> action.run());
-    }
-    public void onMinus(Runnable action){
-        minusBtn.addActionListener(e -> action.run());
-    }
+    
     public void onClear(Runnable action){
         clearBtn.addActionListener(e -> action.run());
     }
@@ -141,6 +142,9 @@ public class CustomerMainFrame extends JFrame{
     }
     public void onCheckOut(Runnable r){
         checkOutBtn.addActionListener(e -> r.run());
+    }
+    public void onShowProduct(Runnable r){
+        showProductBtn.addActionListener(e -> r.run());
     }
     public void setTotalText(String total){
         totLabel.setText("Total: " + total);

@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "productId": "P001",
+    "name": "Laptop ASUS",
+    "category": "Electronics",
+    "price": 35000,
+    "stockQuantity": 20,
+    "description": "15-inch ASUS laptop suitable for programming",
+    "image": "asus_laptop.jpg"
+  },
+  {
+    "productId": "P002",
+    "name": "Wireless Mouse",
+    "category": "Accessories",
+    "price": 1200,
+    "stockQuantity": 4,
+    "description": "2.4GHz wireless mouse",
+    "image": "mouse.jpg"
+  },
+  {
+    "productId": "P003",
+    "name": "Mechanical Keyboard",
+    "category": "Accessories",
+    "price": 4500,
+    "stockQuantity": 4,
+    "description": "RGB mechanical keyboard with blue switches",
+    "image": "keyboard.jpg"
+  }
+]

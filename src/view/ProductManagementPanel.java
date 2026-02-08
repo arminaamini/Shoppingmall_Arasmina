@@ -3,67 +3,86 @@ package view;
 import model.Product;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductManagementPanel extends JPanel {
 
-    private JPanel productsContainerPanel;
-    private JScrollPane scrollPane;
+    private final JButton addBtn = new JButton("Add");
+    private final JButton editBtn = new JButton("Edit");
+    private final JButton deleteBtn = new JButton("Delete");
+    private final JButton refreshBtn = new JButton("Refresh");
+    private final JButton sortABtn = new JButton("Sort Price ↑");
 
-    private List<ProductCardPanel> cards;
+    private final  DefaultTableModel model = new DefaultTableModel(
+        new Object[]{"ID", "Name", "Category", "Price", "Stock"}, 0
+    ){
+        @Override 
+        public boolean isCellEditable(int row, int col){return false;}
+    };
 
-    JButton btnNewProduct;
+    private final JTable table = new JTable(model);
 
+    public ProductManagementPanel(){
+        setLayout(new BorderLayout(10, 10));
 
-    public ProductManagementPanel(MainFrame mainFrame) {
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        top.add(addBtn);
+        top.add(editBtn);
+        top.add(deleteBtn);
+        top.add(refreshBtn);
+        top.add(sortABtn);
 
-        setLayout(new BorderLayout());
+        add(top, BorderLayout.NORTH);
+        add(new JScrollPane(table), BorderLayout.CENTER);
 
-        cards = new ArrayList<>();
-
-        productsContainerPanel = new JPanel();
-        productsContainerPanel.setLayout(new BoxLayout(productsContainerPanel, BoxLayout.Y_AXIS));
-        productsContainerPanel.setBackground(Color.WHITE);
-
-        scrollPane = new JScrollPane(productsContainerPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        btnNewProduct = new JButton("New Product");
-
-        add(scrollPane, BorderLayout.CENTER);
-        add(btnNewProduct, BorderLayout.SOUTH);
+        setPreferredSize(new Dimension(800, 450));
     }
-
-
-
-    public void refreshProducts(List<Product> products) {
-
-        productsContainerPanel.removeAll();
-
-        for (Product p : products) {
-            ProductCardPanel card = new ProductCardPanel(p);
-
-            cards.add(card);
-
-            productsContainerPanel.add(card);
-            productsContainerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+    public void setProducts(List<Product> products){
+        model.setRowCount(0);
+        for(Product p : products){
+            model.addRow(new Object[]{
+                p.getProductId(),
+                p.getName(),
+                p.getCategory(),
+                p.getPrice(),
+                p.getStockQuantity()
+            });
         }
-
-        productsContainerPanel.revalidate();
-        productsContainerPanel.repaint();
     }
 
-
-    public List<ProductCardPanel> getCards() {
-        return cards;
+    public String getSelectedProdeuct(){
+        int row = table.getSelectedRow();
+        if(row < 0) return null;
+        return String.valueOf(model.getValueAt(row, 0));
     }
 
-
-    public JButton getBtnNewProduct() {
-        return btnNewProduct;
+    public void showError(String msg){
+        JOptionPane.showMessageDialog(this, msg, "Info", JOptionPane.ERROR_MESSAGE);
     }
+
+    public void showInfo(String msg){
+        JOptionPane.showMessageDialog(this, msg, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+   
+    public void onAdd(Runnable r){
+        addBtn.addActionListener(e -> r.run());
+    }
+    public void onEdite(Runnable r){
+        editBtn.addActionListener(e -> r.run());
+    }
+    public void onDelete(Runnable r){
+        deleteBtn.addActionListener(e -> r.run());
+    }
+    public void onRefresh(Runnable r){
+        refreshBtn.addActionListener(e -> r.run());
+    }
+    public void onSortA(Runnable r){
+        sortABtn.addActionListener(e -> r.run());
+    }
+    
 
 }

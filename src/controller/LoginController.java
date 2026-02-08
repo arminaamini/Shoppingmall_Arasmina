@@ -5,20 +5,25 @@ import model.Customer;
 import service.AuthService;
 import service.CartService;
 import service.CheckOutService;
+import service.ProductService;
+import view.AdminProductFrame;
 import view.CustomerMainFrame;
 import view.LoginFrame;
+import view.ProductManagementPanel;
 
 public class LoginController{
 
     private final LoginFrame view;
     private final AuthService authService;
+    private final ProductService productService;
     private final CartService cartService;//USAGEEE
     private final CheckOutService checkOutService;
     
 
-    public LoginController(LoginFrame view, AuthService authService, CartService cartService, CheckOutService checkOutService){
+    public LoginController(LoginFrame view, AuthService authService,ProductService productService, CartService cartService, CheckOutService checkOutService){
         this.view = view;
         this.authService = authService;
+        this.productService = productService;
         this.cartService = cartService;
         this.checkOutService = checkOutService;
         wireEvents();
@@ -40,11 +45,9 @@ public class LoginController{
             return;
         }
         Customer customer = result.getData();
-        ////////////////////GPT///////
-        System.out.println("UI received customer.balance = " + customer.getBalance());
-
+        
         CustomerMainFrame cmf = new  CustomerMainFrame(customer.getUsername());
-        new CustomerController(cmf, cartService,checkOutService, customer,
+        new CustomerController(cmf, cartService,checkOutService,productService, customer,
              () -> {
                 view.clearPassword();
                 view.setVisible(true);
@@ -52,7 +55,6 @@ public class LoginController{
              cmf.setVisible(true);
              view.setVisible(false);
         
-    //    public CustomerController(CustomerMainFrame view, CartService cartService,CheckOutService checkOutService, Customer customer, Runnable onLogout){
 
 
     }
@@ -67,7 +69,16 @@ public class LoginController{
         }
         Admin admin = result.getData();
         view.showInfo(("welcome admin: " + admin.getUsername()));
-        // AdminMainFrame 
+
+        view.clearPassword();
+        view.setVisible(false);
+
+        AdminProductFrame adminFrame = new AdminProductFrame();
+        ProductManagementPanel panel = new ProductManagementPanel();
+
+        adminFrame.setContentPane(panel);
+        new AdminProductController(adminFrame, panel, productService);
+        adminFrame.setVisible(true);
 
     }
     private void handleRegister(){
@@ -81,7 +92,7 @@ public class LoginController{
         }
         Customer customer = result.getData();
         CustomerMainFrame cmf = new  CustomerMainFrame(customer.getUsername());
-        new CustomerController(cmf, cartService,  checkOutService, customer,
+        new CustomerController(cmf, cartService,  checkOutService,productService, customer,
              () -> {
                 view.clearPassword();
                 view.setVisible(true);
