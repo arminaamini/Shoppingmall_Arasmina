@@ -1,6 +1,6 @@
 package commons.util;
 import java.security.MessageDigest;
-
+                                                     /////////////////OK\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 public class PasswordHasherUtil {
     
     public static String hasher(String password){

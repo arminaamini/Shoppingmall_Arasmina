@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import javax.swing.JButton;//////////////OK\\\\\\\\\\\\\\\\
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 public class CustomerMainFrame extends JFrame{
     
     private final JTextField productIdField = new JTextField(12);
-    private final JSpinner quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
+    private final JSpinner quantitySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
 
     private final JButton addBtn = new JButton("Add to cart");
     private final JButton removeBtn = new JButton("Remove from cart");
@@ -35,7 +35,7 @@ public class CustomerMainFrame extends JFrame{
     private final JButton profileBtn = new JButton("profile");
     private final JButton checkOutBtn = new JButton("checkout");
     private final JButton logoutBtn = new JButton("Logout");
-    private final JButton refreshBtn = new JButton("Refresh");
+    private final JButton refreshBtn = new JButton("Refresh ");
     private final JButton showProductBtn = new JButton("ShowProduct");
 
 
@@ -57,7 +57,7 @@ public class CustomerMainFrame extends JFrame{
         setTitle("Customer Panel - " + username);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(900, 450);
+        setSize(900, 250);
         setLocationRelativeTo(null);
 
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));

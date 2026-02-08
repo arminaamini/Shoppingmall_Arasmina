@@ -27,12 +27,9 @@ public class ProductService {
         List<Product> products = repo.findAll();
 
         if(asc){
-            products.sort(Comparator.comparing(Product :: getPrice));
+            products.sort(Comparator.comparing(p -> p.getPrice()));
         }
-        else{
-            products.sort(Comparator.comparing(Product :: getPrice).reversed());
-
-        }
+       
         return OperationResult.ok("sorted", products);
     }
 

@@ -5,7 +5,7 @@ package controller;
 import commons.OperationResult;
 import dto.CartSummary;
 import model.Customer;
-import service.CartService;
+import service.CartService;//////////////OK\\\\\\\\\\\\\\\\
 import service.CheckOutService;
 import service.ProductService;
 import view.CustomerMainFrame;
@@ -36,17 +36,17 @@ public class CustomerController {
     }
 
     private void wire(){
-        view.onAdd(this::handleAdd);
-        view.onRemove(this::handleRemove);
+        view.onAdd( () -> handleAdd());
+        view.onRemove(() ->handleRemove());
        
 
-        view.onClear(this::handleClear);
-        view.onRefresh(this::refreshCart);
+        view.onClear(() ->handleClear());
+        view.onRefresh(() ->refreshCart());
 
-        view.onProfile(this::handleProfile);
-        view.onLogout(this::handleLogout);
-        view.onCheckOut(this::handleCheckOut);
-        view.onShowProduct(this::handleShowProduct);
+        view.onProfile(() ->handleProfile());
+        view.onLogout(() ->handleLogout());
+        view.onCheckOut(() ->handleCheckOut());
+        view.onShowProduct(() ->handleShowProduct());
 
 
     }

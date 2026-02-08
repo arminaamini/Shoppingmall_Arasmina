@@ -4,7 +4,7 @@ import dto.CartSummary;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import model.Cart;
+import model.Cart;                            /////////////////OK\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 import model.CartItem;
 import model.Product;
 
@@ -73,7 +73,7 @@ public class CartService {
             Cart cart = cartRepository.loadCart(userId);
 
             boolean removed = cart.getItems().removeIf(i -> productId.equals(i.getProductId()));
-            if(!removed) return  OperationResult.fail("product nit found");
+            if(!removed) return  OperationResult.fail("product not found");
 
             cartRepository.saveCart(userId, cart);
             BigDecimal totalPrice = calculatetotal(cart);

@@ -1,5 +1,5 @@
 package view;
-import javax.swing.*;
+import javax.swing.*;//////////////OK\\\\\\\\\\\\\\\\\
 
 import java.awt.*;
 
@@ -35,7 +35,7 @@ public class LoginFrame extends JFrame {
         root.add(textPanel, BorderLayout.CENTER);
         root.add(buttonPanel, BorderLayout.SOUTH);
         setContentPane(root);
-
+///09169525974
     }
     public String getUsernameInput(){
         return usernameField.getText();

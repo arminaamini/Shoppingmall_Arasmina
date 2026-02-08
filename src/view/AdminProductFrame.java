@@ -6,7 +6,7 @@ public class AdminProductFrame extends JFrame {
         super("AdminPanel - Products");
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(900, 500);
+        setSize(500, 300);
         setLocationRelativeTo(null);
     }
 }

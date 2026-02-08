@@ -26,10 +26,10 @@ public class AuthService {
         try{
             if(username == null || username.trim().isEmpty()) return  OperationResult.fail("username cannot ba empty");
             if(password == null || password.trim().isEmpty()) return  OperationResult.fail("password cannot ba empty");
-//????????
+
             Optional<User> opt = userRepository.findByUsername(username.trim());
             if(opt.isEmpty()) return OperationResult.fail("user not found");
-//?????????????
+
             User user = opt.get();
 
             if(!PasswordHasherUtil.hasher(password).equals(user.getHashedPasswordForRepo())){

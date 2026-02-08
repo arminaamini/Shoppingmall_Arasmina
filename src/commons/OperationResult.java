@@ -1,7 +1,7 @@
 package commons;
 
 public class OperationResult<T> {
-    
+                       /////////////////OK\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     private final boolean success;
     private final String message;
     private final T data;

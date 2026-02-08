@@ -29,7 +29,7 @@ public class ProductManagementPanel extends JPanel {
     public ProductManagementPanel(){
         setLayout(new BorderLayout(10, 10));
 
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8));
         top.add(addBtn);
         top.add(editBtn);
         top.add(deleteBtn);

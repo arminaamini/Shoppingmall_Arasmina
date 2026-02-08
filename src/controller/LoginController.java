@@ -5,7 +5,7 @@ import model.Customer;
 import service.AuthService;
 import service.CartService;
 import service.CheckOutService;
-import service.ProductService;
+import service.ProductService;            //////////////OK\\\\\\\\\\\\\\\\\
 import view.AdminProductFrame;
 import view.CustomerMainFrame;
 import view.LoginFrame;
@@ -16,7 +16,7 @@ public class LoginController{
     private final LoginFrame view;
     private final AuthService authService;
     private final ProductService productService;
-    private final CartService cartService;//USAGEEE
+    private final CartService cartService;
     private final CheckOutService checkOutService;
     
 
@@ -29,9 +29,9 @@ public class LoginController{
         wireEvents();
     }
     private void wireEvents(){
-        view.onCustomerLogin(this :: handleCustomerLogin);
-        view.onAdminLogin(this :: handleAdminLogin);
-        view.onRegister(this :: handleRegister);
+        view.onCustomerLogin(() -> handleCustomerLogin());
+        view.onAdminLogin(() -> handleAdminLogin());
+        view.onRegister(() -> handleRegister());
 
     }
 
@@ -55,9 +55,8 @@ public class LoginController{
              cmf.setVisible(true);
              view.setVisible(false);
         
-
-
     }
+
     private void handleAdminLogin(){
         String username = view.getUsernameInput();
         String password = view.getPasswordInput();
@@ -100,7 +99,6 @@ public class LoginController{
              cmf.setVisible(true);
              view.setVisible(false);
         
-        // باید بره به صفحه مشتری. ایا همان CustomerMainFrame است؟
         
         
     }
