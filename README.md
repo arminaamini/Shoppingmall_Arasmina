@@ -163,3 +163,11 @@ Username: rastin
 Password: 2468
 
 (Passwords are stored in hashed format inside the system.)
+
+# Why This Project Matters
+- This project demonstrates the ability to:
+- Design a real-world application using structured architecture
+- Apply OOP and SOLID principles
+- Separate UI, logic, and persistence layers
+- Write maintainable and scalable Java code
+- Build a complete working desktop application
